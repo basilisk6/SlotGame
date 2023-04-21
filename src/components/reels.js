@@ -58,18 +58,16 @@ export class Reels {
         return this.reels[0].getReelsPosition();
     }
 
-    // Get screen by taking all symbols within the y1 y2 boundaries
-    // To get this apps actual screen take all symbols placed in mask, 
-    //      make it [[]] where inner [] is for one row
-    getScreen(y1, y2) {
+    // Get screen by taking all visible symbols
+    // To get this apps actual screen take all symbols placed on position 1 2 3 of reel
+    getScreen() {
         this.screen = [];
         this.reels.forEach(reel => {
             const singleReel = [];
-            reel.reel.forEach(symbol => {
-                if (symbol.getY() > y1 && symbol.getY() < y2) {
-                    singleReel.push(symbol.getId());
-                }
-            });
+            for (let i = 1; i < 4; i++) {
+                singleReel.push(reel.reel[i].getId());
+            }
+
             this.screen.push(singleReel);
         });
 
