@@ -1,4 +1,4 @@
-Relax Slot Game
+Simple Slot Game
 
 HOW TO RUN:
 
@@ -6,7 +6,7 @@ To run game just open it in vscode, get the Live Server extension and "Go Live"
 
 Description:
 
-This is a simple slot game made for Relax Gaming ltd as a part of hiring interview task.
+This is a simple slot game
 
 The game is build in pixi.js and to track states of game and balance it uses redux. 
 
