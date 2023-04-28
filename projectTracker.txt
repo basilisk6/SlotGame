@@ -1,133 +1,50 @@
-Friday 
+Day 1.
 
 Mostly done setup and projecting.
 Manage to do first class and test it.
 
-• set env
-• set srv using vscode live srv
-• project container architecture
-• project layout
-• project ui
-• set base app
-• center on screen
-• create symbol class
-• create std methods for symbol class
-• import and test symbol in app
-• checking pixi sprite abilities
-
-Saturday 
+Day 2. 
 
 Added multiple classes for reels of the game, tested,
 then added ticker and tested positioning. 
 After that I could start animating spinning of reel.
 
-• create reel class
-• create std methods for reel class
-• import and test reel in app
-• create reels class
-• create std methods for reels class
-• test reels class
-• test together reels reel and symbol
-• test positioning and scaling
-• add ticker to reel class
-• implement spin of reel
-
-Sunday 
+Day 3. 
 
 Implemented spinning and stopping of reels, to do that I used
-TweenMax, had to setup mask as well. After that added drop anim
+TweenMax, had to setup and add mask as well. After that added drop anim
 and few indicators for spin state, so I could test it. 
 
-• add mask to reels
-• implement stopping of reels
-• import tween max lib
-• research tween max
-• research timeline tween
-• implement drop animation of reels
-• containers reposition
-• class cleanup
-• small refactor 
-
-Monday
+Day 4.
 
 First half was for constats because I had a lot of hardcoded values from testing
-Second is dedicated to ui: projecting, creating and adding functionalities.
+Second is dedicated to ui: projecting, creating and adding functionalities 
+like ui container, class, balance text, bet, spin buttons and corresponding methods.
+Added guards for unsufficient funds.
 
-• import constants file
-• add cosntants to files for correct sizes
-• corrected positioning of reel
-• corrected boundaries for reel spin
-• adjusted scales for symbols 
-• added space between symbols
-• replaced hardcoded values with constants in all files
-• fixed slow down speed in spin
-• fixed tween scales for drop animation
-• made ui container
-• made ui class
-• added balance text, bet and spin buttons
-• import button textures
-• ui repositioning
-• added bet levels
-• added current bet
-• implemented methods for increase decrease bet
-• implemented methods for balance decrease on spin
-• binded methods for bet and balance
-• added guards for insufficient funds, for min bet and max bet 
-
-Tuesday
+Day 5.
 
 Dedicated to loading symbols/assets. 
 Problem with import and with PIXI.Assets took a big chunk of time. 
 Second problem with loader and time, got regulated 
 by adding loader.loaded in right place.
 
-• importing symbol assets folder
-• issues and research with PIXI.Assets
-• added manifest and decided to go with PIXI.loader in main
-• used loaded assets in reel to generate symbol
-• loader around reels, deciding what to do with mask
-• resized new assets so it fits the mask and screen
-• added _id in symbol class and getters
-• method isScatter for scat symbol
-
-Wednesday 
+Day 6. 
 
 After having ui and spin, worked on connecting them.
 Then started working on getting payouts from screen.
+Added background images to game and to ui
+Created get screen array (and helper func invert screen)
 
-• binded spin button to actually start spinning the reels,
-• tweened spin stop so symbols have better anim and position nicely
-• added background images to game and to ui
-• repositioned ui, added bet container, tuned style
-• increase and decrease buttons around bet amount resize to fit
-• delay between reels on spin start
-• end spin state and indicator 
-• created get screen array (and helper func invert screen)
-
-Thursday
+Day 7.
 
 Continued work on payout and win. 
 After that, made win presentation to show when win is on screen.
 Connected win, popup win and spin.
 Issues on presenting win after spin is stopped so had to investigate,
-tried a few solutions: ticker indicators, timeouts.  
+tried a few solutions: ticker, indicators, timeouts.  
 
-• added filter screen func
-• added helpers file 
-• implemented calculate payout
-• implemented helper functions for calc
-• implemented get win per win line
-• tweaked total win to be per bet and win line
-• added win lines array
-• added symbol payouts array 
-• tested some indicators for stopping reels -- ditched
-• solutions for test update scene after spin stopped
-• create win popup class
-• create style for win popup
-• implemented methods for show and hide win popup
-• added win popup to container
-
-Friday
+Day 8.
 
 Dedicated to changing the reels and screen on spin.
 Destroy had problems when adding back Obj to container, so for now 
@@ -135,21 +52,7 @@ I did it as texture and id change.
 Then I had completed part of what I wanted from simple game, besides 
 smallwork, so next was time for redux.
 
-• implemented symbols change on reel spin
-• added reset func in classes
-• added destroy func in symbol 
-• destroy issues -- decided to go texture change for now
-• redux research
-• redux setup
-• created balanceSlice with reducer
-• created betLevelSlice with increase decrease reducers
-• created gameStateSlice with state reducers
-• created redux store
-• added slices to store
-• tried import store to pixi -- error
-• solutions to error
-
-Saturday
+Day 9.
 
 Lightwork today because lack of time. 
 Mostly force screen to trigger the win on every fourth spin.
@@ -158,30 +61,7 @@ investigated and fixed that.
 Finished by adding payout and calc for scatter as it's different
 symbols than the rest.
 
-• made one of symbols scatter
-• made every 4th spin winnable 
-• made force reels func for cheating winning screen
-• further research on store
-• fixed issue regarding full line payment
-• fixed issue regarding multiple lines payment
-• made calc scatter func
-
-Sunday 
-
-Happy Easter - Христос Воскресе
-          _     _
-         /\`\ /`/\
-         \/\ V /\/
-           /6 6\
-          (= Y =)
-          /`"^"`\
-         / /   \ \
-        (_/     \_)
-         /       \o
-      ___\       /___
-     (((____/^\____))) 
-
-Monday
+Day 10.
 
 After finding out correct redux script tags, started importing store in ui.
 Replaced betAmount balanceAmount to take values from store, subbed store and did code cleanup.
@@ -189,25 +69,7 @@ After that started importing store in reels and main to get the state of the gam
 Replaced available indicators with stateGame from redux and then started working 
 on bunch of bugs that it created.
 
-• found a way to import redux
-• ui balance bind to redux
-• dispatch on spin click new balance
-• subbed balanceAmount.text to redux store
-• test reduxed balanceAmount
-• ui bet amount bind to redux
-• increase/decreaseBet func tweaks
-• constats added where forgotten
-• removed them from ui, since they are in balanceSlice
-• subbed to betAmount to store
-• replaced guardians for min max betLvl
-• dispatches to increase/decrease bet on click 
-• changed balance update when win occurs to get from balance slice
-• started changing states of game
-• removing indicators of game and adding gameStates instead from gameStateSlice
-• spinning bug induced from states fix
-• deplay of spin between reels gone because of gameStates fix
-
-Tuesday
+Day 11.
 
 Looking for a way to dispatch as few times as possible, also trying to reduce call of
 stopSpin, startDrop functions only once because they consist of tweens and they are not
@@ -216,33 +78,12 @@ Then subscribed winAnim to redux to get present win state, encountered error whe
 updateBalance in that sub/state and went to inf loop. Took a lot of time to fix that one.
 While refactoring ui, notices repeatability, and made class for text and buttons.
 
-• added indicators to ensure tween functions in update occur only once
-• added guards for startDropSymbol animation
-• issues in stopSpinning for dispatching prewin once for each reel
-• subbed win anim to store
-• getting screen and calculating win now in sub
-• going to idle state from there if no win
-• if win presentWin and update balance
-• balance dispatch infinite loop research and fix
-• added addToBalance to solve issue
-• small refactor in ui - removed multiple subs
-• added classes for text and buttons
-• made recap of priority fixes for next days to have playable game
-
-Wednesday 
+Day 12. 
 
 Just working on fixing reel spin and stop spin state, and removing visible bugs.
 Had three fixes to find solution to.
-
-• research and fix of different deltaTimes in reel
-• fix of scatter pulsing - onComplete was in wrong tween
-• fix of delay between startSpin of reels - add prop reelId
-• refactor stopSpin by making triggerStopTween funct 
-• added EPS surroundings for getting symbols into right positions
-• idea to tween only if its in EPS, and to 'spin a bit more' if not 
-• infinite loop of pulsing scatters error in startDropAnim solved
   
-Thursday
+Day 13.
 
 Finishing touches and code cleanup/refactor/documentation. Ensuring to 
 provide as much information as possible. 
@@ -250,66 +91,27 @@ Upped ticker and update functions from reel to reels so i don't have multiple ti
 in game, but just one unique. Refactored it's functions and cleaned classes.
 Git upload and then going through code one more time to see if anything's left.
 
-• trying to remove recursive call from checkEPS
-• find right boundaries to speed when slowing down
-• making them constants and puting in constants.js
-• EPS moved to constants.js as might get used more times
-• slow down idea with EPS -- not working
-• removed some functions in reels that aren't needed because of redux
-• documented some of the functions, removed more hardcoded values
-• checked for future TODOs if there's time to finish some of them
-• changed condition: instead of checking symbols in mask, just check symbol ids
-• reorganised folders, assets and imports, from scripts to files
-• added redux file and documentation - idea is to have redux separated from src* 
-• upped ticker from reel to reels, so i have unique ticker
-• upped everything from update in reel to reels as well, remodified
-• git push
-• how to run
+After getting feedback:
 
--- Issues encountered
+Day 14. 15. 16.
 
-• PIXI.Assets doesn't work because import * PIXI doesn't work
-  -> so I couldn't get latest pixi that has .Assets
-  -> couldn't setup webpack nicely
-• Redux import had the same issue as PIXI.Assets
-• Loader, loader.load, onComplete
-  -> was making 'new Reels' without loader.load 
-  -> resulted in creating Symbols without loaded texture
-        which caused breaking of app
-  -> loader.load in reels or reel was too late
-        had to be done on 'new Reels'
-• numOfTweens 
-  -> wrong constant
-• replace TweenMax with PIXI.TweenManager
-  -> couldnt find a right script tag, every single one was not found
-• tween in udpate issues 
-  -> related to previous problem
-  -> tried to add guards so update calls function only once, then 
-        that function does the tween and sends onComplete back 
-        so flow can continue
-  -> still had timeout issues 
-• dispatching event 25 times instead of 5
-  -> when every reel completes it dispatched the action
-  -> ensured that only when the last reel completes it dispatches actions
-  -> still occurs in functions with tweens
-• delta time issues
-  -> when stopping down reel, had issues with delta because its called 
-        each time for every reel
-  -> passed down unique deltaTime from reels to every reel so now it updates
-        from that common ticker
-  -> Possible approach: make spin stop in reels ticker and animate 
-        stopping by calling setReelPosition function
-• infinite loop of pulsing scatters
-  -> mostly because the function is called multiple time in update and
-        my scatterQueue wasn't emptying fast enought from tween onComplete
-  -> added indicator to call startDropAnim only once per reel
+Spent configuring webpack of project. After configuring webpack had a problem with hot reload.
+After all those issues were resolved, removed all files and folders in src.
+Then once again reckeched all imports and changed from script tag import to ES6 imports.
+After imports were done, first thing was to change loading of assets from pixi loader 
+to Pixi Assets. 
 
--- Future TODOs if enough time:
+Day 17.
+
+Took spin start and stop functions and made them with tween instead of using current update.
+Added indicators/guards to ensure it calls tweens from update only once.
+Further refactor of code. 
+
+
+
+-- TODO:
+• 2. Ui bet amount disable/enable
+• 3. screen from BE
+• ticker to main
 • refactor background of ui to before init of ui not after
-• tween spinning instead of update
-
--- Debate
-• Destroy symbol instead of changing texture
-• Is it better to dispatch in main or in classes
-• Redux outside src? If it's like sort of backend
 

@@ -1,9 +1,9 @@
-import { presentWin } from "../../redux/slices/gameStateSlice.js";
-import store from "../../redux/store.js";
-import { REEL_DECAY, REEL_REPEAT, REEL_SPEED, SYMBOLS_ON_SCREEN } from "../config/constants.js";
-import { REEL_LENGTH } from "../config/constants.js";
-import { FRAME_SCALE_OFFSET, REEL_NUMBER, SYMBOL_HEIGHT, SYMBOL_WIDTH } from "../config/constants.js";
+import store from "../store/store.js";
+import { presentWin } from "../store/slices/gameStateSlice.js";
+import { REEL_DECAY, REEL_LENGTH, REEL_REPEAT, SYMBOLS_ON_SCREEN, 
+    FRAME_SCALE_OFFSET, REEL_NUMBER, SYMBOL_HEIGHT, SYMBOL_WIDTH} from "../config/constants.js";
 import { Reel } from "./reel.js";
+import { Ticker } from "pixi.js";
 
 export class Reels {
     reels = [];
@@ -12,7 +12,7 @@ export class Reels {
         this.reelLength = reelLength;
 
         // Construct ticker
-        this.ticker = new PIXI.Ticker();
+        this.ticker = new Ticker();
         this.ticker.add(this.update.bind(this));
         this.ticker.start();
 
@@ -95,29 +95,39 @@ export class Reels {
         });
     }
 
-
-    update(delta) {    
+    // Indicator to trigger spinning of reel only once
+    spinStartedIndicator = false;
+    spinStoppingIndicator = false;
+    update(delta) { 
         // If in corresponding state, start corresponding action
+
         if (this.gameState && 
-            this.gameState.gameState === 'spinning') {    
-                this.reels.forEach(reel => {
-                    reel.spinReel(reel.reelSpeed * delta, REEL_REPEAT * REEL_LENGTH);
-                });
+            this.gameState.gameState === 'spinning') {   
+                if (!this.spinStartedIndicator) {
+                    this.spinStartedIndicator = true;
+                    this.reels.forEach(reel => {
+                        reel.spinReel();
+                    });
+                } 
         }
 
         if (this.gameState && 
             this.gameState.gameState === 'stopping') {  
-                let slowDownSpeed = REEL_DECAY;
-                
-                this.reels.forEach(reel => {
-                    // Slow down speed
-                    reel.reelSpeed -= reel.reelSpeed * slowDownSpeed * delta;
-                    reel.stopSpinningReel(reel.reelSpeed);     
-                });
+                this.spinStartedIndicator = false;
+
+                if (!this.spinStoppingIndicator) {
+                    this.spinStoppingIndicator = true;
+
+                    this.reels.forEach(reel => {
+                        reel.stopSpinningReel();
+                    });
+                }
         } 
 
         if (this.gameState && 
             this.gameState.gameState === 'preWin') {   
+                this.spinStoppingIndicator = false;
+
                 this.reels.forEach(reel => {
                     reel.reel.forEach(symbol => {
                         if (symbol.isScatter()) {

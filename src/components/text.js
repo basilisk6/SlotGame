@@ -1,5 +1,7 @@
+import * as PIXI from "pixi.js";
+
 // Simple text class for creating text in ui
-//   for now it has all functionalities from PIXI.Text
+//   for now it has all functionalities from pixi Text
 export class Text extends PIXI.Text {
     constructor(text, style) {
         super(text, style);

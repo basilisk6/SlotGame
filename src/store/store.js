@@ -1,9 +1,10 @@
+import { configureStore } from '@reduxjs/toolkit'
 import balanceSlice from './slices/balanceSlice.js';
 import betLevelSlice from './slices/betLevelSlice.js';
 import gameStateSlice from './slices/gameStateSlice.js';
 
 // Idea is to simple have a simple store to track balance, bet and game state
-const store = window.RTK.configureStore({
+const store = configureStore({
     reducer: {
         balance: balanceSlice.reducer,
         betLevel: betLevelSlice.reducer,

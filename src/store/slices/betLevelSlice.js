@@ -1,4 +1,5 @@
-import { BET_AMOUNT_LEVELS, DEFAULT_BET_LEVEL } from '../../src/config/constants.js';
+import { BET_AMOUNT_LEVELS, DEFAULT_BET_LEVEL } from '../../config/constants.js';
+import { createSlice } from '@reduxjs/toolkit';
 
 const initialState = {
     currentLevel: DEFAULT_BET_LEVEL,
@@ -8,7 +9,7 @@ const initialState = {
 
 // Slice to increase or decrease bet levels by changing bet level 
 //      and then getting current bet based on current bet level
-const betLevelSlice = window.RTK.createSlice({
+const betLevelSlice = createSlice({
     name: "betAmount",
     initialState,
     reducers: {

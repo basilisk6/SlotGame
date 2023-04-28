@@ -1,10 +1,12 @@
-import { idle } from "../../redux/slices/gameStateSlice.js";
-import store from "../../redux/store.js";
+import { idle } from "../store/slices/gameStateSlice.js";
+import store from "../store/store.js";
+import { Linear, gsap } from "gsap";
+import { TextStyle, TextMetrics, Text, Ticker } from "pixi.js";
 
 export class PopupWin {
     // Text and amount init, setting pos, anchor, scale
     constructor() {
-        const style = new PIXI.TextStyle({
+        const style = new TextStyle({
             fill: "0xa7a9ac",
             fontFamily: "Verdana",
             fontSize: 50,
@@ -14,16 +16,16 @@ export class PopupWin {
             strokeThickness: 5,
         });
         // Warning about metric elimination
-        this.textMetrics = PIXI.TextMetrics.measureText('WIN', style);
-        this.amountMetrics = PIXI.TextMetrics.measureText('0', style);
+        this.textMetrics = TextMetrics.measureText('WIN', style);
+        this.amountMetrics = TextMetrics.measureText('0', style);
 
-        this.text = new PIXI.Text('WIN', style);
+        this.text = new Text('WIN', style);
         this.text.alpha = 0;
         this.text.scale.set(0);
         this.text.anchor.set(0.5);
         this.text.position.set(0, 0);
 
-        this.amount = new PIXI.Text('0', style);
+        this.amount = new Text('0', style);
         this.amount.alpha = 0;
         this.amount.scale.set(0);
         this.amount.anchor.set(0.5);
@@ -34,7 +36,7 @@ export class PopupWin {
             this.gameState = store.getState().gameState;
         });
 
-        this.ticker = new PIXI.Ticker();
+        this.ticker = new Ticker();
         this.ticker.add(this.update.bind(this));
         this.ticker.start();
     }
@@ -51,11 +53,12 @@ export class PopupWin {
         const duration = 1;
         const ease = Linear.easeOut;
 
-        TweenMax.to([this.text, this.amount], duration, 
-            { alpha: 1, ease });
-        TweenMax.to([this.text.scale, this.amount.scale], duration, { 
+        gsap.to([this.text, this.amount],
+            { alpha: 1, duration, ease });
+        gsap.to([this.text.scale, this.amount.scale], { 
             x: 1.5, 
             y: 1.5, 
+            duration,
             ease,
             onComplete: () => {
                 setTimeout(() => {
@@ -63,8 +66,9 @@ export class PopupWin {
                 }, 2000);
             }
         });
-        TweenMax.to(this.amount, duration, {
+        gsap.to(this.amount, {
                 text: win,
+                duration, 
                 roundProps: "text",
                 ease,
                 onUpdate: () => {
@@ -81,11 +85,12 @@ export class PopupWin {
         const duration = 0.5;
         const ease = Linear.easeIn;
 
-        TweenMax.to([this.text, this.amount], duration, 
-            { alpha: 0, ease })
-        TweenMax.to([this.text.scale, this.amount.scale], duration, { 
+        gsap.to([this.text, this.amount], 
+            { alpha: 0, duration,  ease })
+        gsap.to([this.text.scale, this.amount.scale],  { 
             x: 0, 
             y: 0, 
+            duration, 
             ease,
             onComplete: () => {
                 this.amount.text = 0;

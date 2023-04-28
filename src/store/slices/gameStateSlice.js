@@ -1,5 +1,7 @@
+import { createSlice } from '@reduxjs/toolkit';
+
 // Slice for tracking states of game, depending on state redner different stuff in game
-const gameStateSlice = window.RTK.createSlice({
+const gameStateSlice = createSlice({
     name: 'gameState',
     initialState: {
         gameState: 'idle' // Idea of flow: idle -> spinning -> stopping -> prewin -> win -> idle

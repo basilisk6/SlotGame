@@ -1,7 +1,8 @@
 import { BET_AMOUNT_LEVELS, DEFAULT_BET_LEVEL, DEFAULT_FONT_STYLE, DEMO_BALANCE } from "../config/constants.js";
-import store from "../../redux/store.js";
-import { updateBalance } from "../../redux/slices/balanceSlice.js";
-import { decreaseBetLevel, increaseBetLevel } from "../../redux/slices/betLevelSlice.js";
+import store from "../store/store.js";
+import { TextStyle, Container, Texture } from "pixi.js";
+import { updateBalance } from "../store/slices/balanceSlice.js";
+import { decreaseBetLevel, increaseBetLevel } from "../store/slices/betLevelSlice.js";
 import { Text } from "./text.js";
 import { Button } from "./button.js";
 
@@ -11,7 +12,7 @@ export class UI {
     // Creates balance text, amount, bet amount and buttons for increase decrease and spin
     // Sets it's pos, anchor, scale, inits handlers onClick 
     constructor() {
-        this.style = DEFAULT_FONT_STYLE;
+        this.style = new TextStyle(DEFAULT_FONT_STYLE);
 
         this.balanceText = new Text('Balance: ', this.style); 
         this.balanceText.setX(-20);
@@ -19,20 +20,20 @@ export class UI {
         this.balanceAmount = new Text(DEMO_BALANCE, this.style);  
         this.balanceAmount.setX(this.balanceText.x + this.balanceText.width);
 
-        this.betAmountContainer = new PIXI.Container();
+        this.betAmountContainer = new Container();
         this.betAmountContainer.pivot.x = 0.5;
 
         this.betAmount = new Text(BET_AMOUNT_LEVELS[DEFAULT_BET_LEVEL], this.style);
         this.betAmountContainer.addChild(this.betAmount);
         this.betAmount.setX(this.betAmountContainer.width * 0.5);
 
-        const arrowTexture = new PIXI.Texture.from('./assets/ui/arrowButton.png');
+        const arrowTexture = Texture.from('./assets/ui/arrowButton.png');
         this.decreaseBetButton = new Button(arrowTexture, 0.1, 0.5);
             
         this.increaseBetButton = new Button(arrowTexture, 0.1, 0.5);
         this.increaseBetButton.rotation = Math.PI;
 
-        const spinTexture = new PIXI.Texture.from('./assets/ui/spinButton.png');
+        const spinTexture = Texture.from('./assets/ui/spinButton.png');
         this.spinButton = new Button(spinTexture, 0.2, 0.5);
         this.spinButton.position.set(
             1000, 

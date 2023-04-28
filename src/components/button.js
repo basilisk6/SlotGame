@@ -1,12 +1,13 @@
+import { Sprite } from "pixi.js";
 // Basic button class for ui, 
 //    since i use it as Sprite, 
 //    has more sense to be in a button class
-export class Button extends PIXI.Sprite {
+export class Button extends Sprite {
     constructor (texture, scale, anchor) {
         super(texture);
 
         this.scale.set(scale);
-        this.anchor.set(anchor);
+        this.anchor.set(anchor); 
         this.interactive = true;
         this.buttonMode = true;
     }

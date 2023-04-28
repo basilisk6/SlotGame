@@ -1,4 +1,5 @@
 import { SCATTER_SYMBOL_ID } from "../config/constants.js";
+import { Sprite } from "pixi.js";
 
 // Basic class for Symbol of the game with simple getters and setters
 // sprite, _id as simple props and isProcessed to keep track for scatter symbols
@@ -9,7 +10,7 @@ export class Symbol {
     constructor(texture, id) {
         this._id = id;
 
-        this.sprite = PIXI.Sprite.from(texture);
+        this.sprite = Sprite.from(texture);
         this.sprite.anchor.set(0.5);
         this.sprite.position.set(0, 0);
     }

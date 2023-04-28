@@ -1,7 +1,9 @@
-import { REEL_DECAY, REEL_LENGTH, REEL_NUMBER, REEL_REPEAT, REEL_SPEED, EPS, EPS_Y, STOP_SPIN_SPEED, SYMBOLS_ON_SCREEN, SYMBOL_HEIGHT, SYMBOL_SCALE, SYMBOL_WIDTH } from "../config/constants.js";
-import { preWin, stopSpin, presentWin } from "../../redux/slices/gameStateSlice.js";
-import { symbols } from "../main.js";
-import store from "../../redux/store.js";
+import { REEL_LENGTH, REEL_NUMBER, REEL_SPEED, EPS, EPS_Y, STOP_SPIN_SPEED, 
+    SYMBOLS_ON_SCREEN, SYMBOL_HEIGHT, SYMBOL_SCALE, SYMBOL_WIDTH, NUMBER_OF_SYMBOLS, REEL_REPEAT } from "../config/constants.js";
+import { preWin, stopSpin } from "../store/slices/gameStateSlice.js";
+import { loadSymbolAssets } from "../index.js";
+import store from "../store/store.js";
+import { gsap, Expo, Power2, Power0, Power1, Power4, Power3, Back } from "gsap";
 import { Symbol } from "./symbol.js";
 
 export class Reel {
@@ -15,10 +17,11 @@ export class Reel {
         let symbolId;
         // Create single reel and fill with random symbols
         for (let i = 0; i < this.reelLength; i++){
-            symbolId = Math.floor(Math.random() * symbols.length);
-            const texture = symbols[symbolId];
+            symbolId = Math.floor(Math.random() * NUMBER_OF_SYMBOLS);
+            const texture = loadSymbolAssets[`sym_${symbolId}`]; 
             this.reel[i] = new Symbol(texture, symbolId);
             this.reel[i].setScale(this.symbolScale);
+            
         }
         
         this.reelSpeed = REEL_SPEED;
@@ -28,8 +31,8 @@ export class Reel {
     resetReelSymbols() {
         let symbolId;
         for (let i = 0; i < this.reelLength; i++){
-            symbolId = Math.floor(Math.random() * symbols.length);
-            const texture = symbols[symbolId];
+            symbolId = Math.floor(Math.random() * NUMBER_OF_SYMBOLS);
+            const texture = loadSymbolAssets[`sym_${symbolId}`];
             this.reel[i].changeSymbol(texture, symbolId);
         }
 
@@ -53,16 +56,16 @@ export class Reel {
         //      then fill the rest of length of the reel with random id's again
         const fillerArr = new Array(REEL_LENGTH - SYMBOLS_ON_SCREEN - 1);
         for (let i = 0; i < fillerArr.length; i++) {
-          fillerArr[i] = Math.floor(Math.random() * symbols.length);
+          fillerArr[i] = Math.floor(Math.random() * NUMBER_OF_SYMBOLS);
         }
         symbolIdArr = symbolIdArr
-            .concat(Math.floor(Math.random() * symbols.length))
+            .concat(Math.floor(Math.random() * NUMBER_OF_SYMBOLS))
             .concat(forceIds)
             .concat(fillerArr);
 
         // Change symbols according to new filled symbolIdArr
         for (let i = 0; i < symbolIdArr.length; i++){
-            const texture = symbols[symbolIdArr[i]];
+            const texture = loadSymbolAssets[`sym_${symbolIdArr[i]}`];
             this.reel[i].changeSymbol(texture, symbolIdArr[i]);
         }
     }
@@ -103,89 +106,64 @@ export class Reel {
         });
     }
    
-    spinRepeat = 0;
-    // Bounds to put symbol from bottom to top
-    // Note: Upper bound isn't 0 because of anchor 0.5 ergo SYMBOL_WIDTH * SYMBOL_SCALE / 2
-    // Note: this.symbolScale != SYMBOL_SCALE because of FRAME_SCALE_OFFSET, so we use SYMBOL_SCALE
-    reelUpperBound = -SYMBOL_WIDTH * SYMBOL_SCALE / 2;
-    reelLowerBound = SYMBOL_HEIGHT * SYMBOL_SCALE * REEL_LENGTH 
-        - SYMBOL_WIDTH * SYMBOL_SCALE / 2;
-    // Starts spinning of reel, repeatCount is for how many times the symbols is gonna reset before stopping
-    spinReel(spinSpeed, repeatCount) {
-        this.reel.forEach(symbol => {
-            // Start spinning reel by passed speed
-            symbol.setY(symbol.getY() + spinSpeed)
-
-            // Reset position of symbol when it's out of bounds of reel
-            if (symbol.getY() > this.reelLowerBound) {
-                symbol.setY(this.reelUpperBound);
-                this.spinRepeat++;
-            }
-        });
-        
-        // Go to stopping state of spin if condition is met for last reel
-        if (this.spinRepeat === repeatCount && this.reelId === REEL_NUMBER - 1) {
-            this.spinRepeat = 0;
-            store.dispatch(stopSpin());
-        } 
+    // Tweens to start spinning reel
+    spinReel() {   
+        for (let i = 0; i < this.reelLength; i++) {
+            // First tween to give slingshot animation of reels first going slowly upside
+            gsap.to(this.reel[i].sprite, 
+                {
+                    y: `-= ${SYMBOL_HEIGHT * SYMBOL_SCALE}`,
+                    duration: 0.2,
+                    ease: Power1.easeIn,
+                    onComplete: () => {
+                        // Second tween to actually spin the full length of the reel
+                        gsap.to(this.reel[i].sprite,  
+                            { 
+                                // Tweak length of tween with REEL_REPEAT
+                                // + 4 is added for completion to full circle of reel strip
+                                y: `+= ${SYMBOL_HEIGHT * SYMBOL_SCALE * (REEL_LENGTH * REEL_REPEAT + 4) / 2}`, 
+                                duration: 3,
+                                ease: Power2.easeOut,
+                                modifiers: {
+                                    y: gsap.utils.unitize(y => -54.75 + parseFloat(y) % (SYMBOL_HEIGHT * SYMBOL_SCALE * 5))
+                                },
+                                onComplete: () => {
+                                    // When last symbol of last reelId finished, call dispatch
+                                    if (this.reelId === REEL_NUMBER - 1 && i == this.reelLength - 1){
+                                        store.dispatch(stopSpin());
+                                    }
+                                }
+                            }
+                        )
+                    }
+                }
+            )
+        };
     }
     
-    tweensCompleted = false;
     // Stop spinning by having decayed speed over time, when threshold is met: tween to stop visible symbols,
     //      and invisible symbols just reset
-    stopSpinningReel(speed) {
-        this.reel.forEach(symbol => {
-            symbol.setY(symbol.getY() + speed);
-
-            if (symbol.getY() > this.reelLowerBound) {
-                symbol.setY(this.reelUpperBound);
-            }
-        });
-
-        // When spin is stopped go to drop anim
-        if (speed <= STOP_SPIN_SPEED) { 
-            // If symbol position isn't in his EPS area to tween, continue spin untill it is
-            // if(!this.checkForEPS()) {
-            //     // Extend spin with a bit boost untill symbols are in EPS
-            //     console.log("Not in eps")
-            // }          
-            this.triggerStopTween();
-
-            if (this.tweensCompleted ) { //this.tweensCompleted > SYMBOLS_ON_SCREEN) {
-                this.tweensCompleted = false;
-                this.reelSpeed = REEL_SPEED;
-                if (this.reelId === REEL_NUMBER - 1) {
-                    store.dispatch(preWin());
-                }
-            }
-        }
-    }
-
-    // Tween visible symbols to their position and reset invisible (under mask) ones
-    triggerStopTween() {
-        const ease = Power1.easeIn;
-        const duration = 0.15;
+    stopSpinningReel() {
         let yPosToTween = (SYMBOL_HEIGHT * SYMBOL_SCALE / 2);
-        // Center visible symbols by setting good position Y,
+
         // Note: Good pos: i * SYMBOL_HEIGHT * SYMBOL_SCALE -  (SYMBOL_HEIGHT * SYMBOL_SCALE / 2)
         //  but formulated better with yPosToTween
         for (let i = 0; i < REEL_LENGTH; i++) {
-            // Visible symbols 
-            if (i > 0 && i <= SYMBOLS_ON_SCREEN) {
-                gsap.to( this.reel[i].sprite, {
-                    duration: duration, 
-                    y: yPosToTween * (2 * i - 1), ease,
-                    onComplete: () => {
-                        this.tweensCompleted = true;
+            gsap.to( this.reel[i].sprite, {
+                duration: 0.2,
+                y: yPosToTween * (2 * i - 1), 
+                ease: Power0.easeOut,
+                onComplete: () => {
+                    if (this.reelId === REEL_NUMBER - 1 && i == this.reelLength - 1){
+                        store.dispatch(preWin());
                     }
-                });
-            } else {
-                // Not visible symbols
-                this.reel[i].setY(
-                    yPosToTween * (2 * i - 1)
-                );
-            } 
+                }
+            });
         }
+    }
+
+    triggerStopTween() {
+        
     }
 
     // Idea: If symbol is close to its EPS surroundings, then it's fit to tween it
@@ -201,7 +179,6 @@ export class Reel {
 
     // Drop animation of symbol is a simple pulsing animation using tweens
     // Keeps track is symbol is processed so it is only called once
-    // On complete pops symbol from scatterQ needed for later state switch
     startDropAnim(symbol) {
         if (!symbol.isProcessed) {
             return
@@ -232,8 +209,15 @@ export class Reel {
                     ease, 
                     delay: duration,
                 })
-            );         
-            tweenTimeline.play();
+            );
         }
+    }
+
+    update() {
+        this.reels.forEach(symbol => {
+            if (symbol.getY() > this.reelLowerBound) {
+                symbol.setY(this.reelUpperBound);
+            }
+        });
     }
 }

@@ -15,7 +15,7 @@ export const REEL_NUMBER = 5;
 export const REEL_LENGTH = 5;
 
 // How many times the reel is gonna respin
-export const REEL_REPEAT = 3;
+export const REEL_REPEAT = 12;
 
 // How many symbols of reel are visible on screen
 export const SYMBOLS_ON_SCREEN = 3;
@@ -54,8 +54,8 @@ export const EPS_Y = SYMBOL_HEIGHT * SYMBOL_SCALE / 2;
 export const EPS = EPS_Y / 2;
 
 // Default font style of game
-export const DEFAULT_FONT_STYLE =  new PIXI.TextStyle({
+export const DEFAULT_FONT_STYLE = {
     fontFamily: "Verdana",
     fontVariant: "small-caps",
     fontWeight: "bold",
-});
+}
